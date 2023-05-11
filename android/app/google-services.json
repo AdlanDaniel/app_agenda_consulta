@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "722577219247",
+    "project_id": "app-agenda-consulta-bd1b3",
+    "storage_bucket": "app-agenda-consulta-bd1b3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:722577219247:android:cdf649ef9c263fceac7e5a",
+        "android_client_info": {
+          "package_name": "com.example.app_agenda_consulta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "722577219247-4l3qfs4vc252ab5bief1mukulo2acvat.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAanUDfjtMa_1LiuSX-p2_ZABNMwbv9jes"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "722577219247-4l3qfs4vc252ab5bief1mukulo2acvat.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
