@@ -12,7 +12,11 @@ class HomeController extends GetxController {
   TextEditingController dateEC = TextEditingController();
   TextEditingController nameEC = TextEditingController();
 
-  RxList listPatient = [].obs;
+  void removePatient(int index) {
+    patients.removeAt(index);
+  }
+
+  RxList patients = [].obs;
 
   Rx<bool> statusIcon = true.obs;
 
@@ -30,7 +34,7 @@ class HomeController extends GetxController {
     DateTime? dataNow = DateTime.now();
     String dataString = DateFormat('dd/MM/yyyy').format(dataNow);
     try {
-      listPatient.value = await serviceApp.selectDay(dataString);
+      patients.value = await serviceApp.selectDay(dataString);
       dateEC.text = dataString;
     } on DeadLineExceededServiceError {
       ScaffoldMessenger.of(Get.context!).showSnackBar(const SnackBar(
@@ -61,7 +65,7 @@ class HomeController extends GetxController {
       String showdata = DateFormat('dd/MM/yyyy').format(data);
 
       try {
-        listPatient.value = await serviceApp.selectDay(showdata);
+        patients.value = await serviceApp.selectDay(showdata);
         dateEC.text = showdata;
       } on DeadLineExceededServiceError {
         ScaffoldMessenger.of(Get.context!).showSnackBar(const SnackBar(
@@ -93,18 +97,18 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<void> updateFinalized(String id, bool isFinalized) async {
+  Future<void> changeStatusConsult(String id, bool isFinalized) async {
     try {
-      await serviceApp.updateFinalized(id, isFinalized);
+      await serviceApp.changeStatusConsult(id, isFinalized);
     } on GenericServiceError {
       ScaffoldMessenger.of(Get.context!).showSnackBar(const SnackBar(
           content: Text('Erro ao atualizar dados! Tente novamente')));
     }
   }
 
-  Future<void> updatePresent(String id, bool isPresent) async {
+  Future<void> changeStatusPatient(String id, bool isPresent) async {
     try {
-      serviceApp.updatePresent(id, isPresent);
+      serviceApp.changeStatusPatient(id, isPresent);
     } on GenericServiceError {
       ScaffoldMessenger.of(Get.context!).showSnackBar(const SnackBar(
           content: Text('Erro ao atualizar dados! Tente novamente')));

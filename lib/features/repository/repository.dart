@@ -3,12 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 abstract class Repository {
   String getPatientId();
-  Future<void> register(PatientModel patient);
-  Future<List<PatientModel>> getInfo(String date);
-  Future selectDay(String date);
+  Future<void> scheduleConsult(PatientModel patient);
+  Future<List<PatientModel>> getPatientInfo(String date);
+  Future<List<PatientModel>> selectDay(String date);
   Future<void> deleteConsult(String id);
-  Future<void> updatePresent(String id, bool isPresent);
-  Future<void> updateFinalized(String id, bool isFinalized);
+  Future<void> changeStatusPatient(String id, bool isPresent);
+  Future<void> changeStatusConsult(String id, bool isFinalized);
 }
 
 class RepositoryImpl implements Repository {
@@ -18,7 +18,7 @@ class RepositoryImpl implements Repository {
   });
 
   @override
-  Future<void> register(PatientModel patient) async {
+  Future<void> scheduleConsult(PatientModel patient) async {
     try {
       await database
           .collection('pacientes')
@@ -67,8 +67,8 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<List<PatientModel>> getInfo(String date) async {
-    List<PatientModel> listPatient = [];
+  Future<List<PatientModel>> getPatientInfo(String date) async {
+    List<PatientModel> patients = [];
     try {
       QuerySnapshot querySnapshot = await database
           .collection('pacientes')
@@ -78,9 +78,9 @@ class RepositoryImpl implements Repository {
       listQuery.forEach((element) {
         Map<String, dynamic> patientMap =
             element.data() as Map<String, dynamic>;
-        listPatient.add(PatientModel.fromMap(patientMap));
+        patients.add(PatientModel.fromMap(patientMap));
       });
-      return listPatient;
+      return patients;
     } on FirebaseException catch (error) {
       switch (error.code) {
         case 'deadline-exceeded':
@@ -102,7 +102,7 @@ class RepositoryImpl implements Repository {
 
   @override
   Future<List<PatientModel>> selectDay(String date) async {
-    List<PatientModel> listPatient = [];
+    List<PatientModel> patients = [];
     try {
       QuerySnapshot querySnapshot = await database
           .collection('pacientes')
@@ -112,9 +112,9 @@ class RepositoryImpl implements Repository {
       listQuery.forEach((element) {
         Map<String, dynamic> patientMap =
             element.data() as Map<String, dynamic>;
-        listPatient.add(PatientModel.fromMap(patientMap));
+        patients.add(PatientModel.fromMap(patientMap));
       });
-      return listPatient;
+      return patients;
     } on FirebaseException catch (error) {
       switch (error.code) {
         case 'deadline-exceeded':
@@ -144,7 +144,7 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<void> updateFinalized(String id, bool isFinalized) async {
+  Future<void> changeStatusConsult(String id, bool isFinalized) async {
     try {
       await database
           .collection('pacientes')
@@ -156,7 +156,7 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<void> updatePresent(String id, bool isPresent) async {
+  Future<void> changeStatusPatient(String id, bool isPresent) async {
     try {
       await database
           .collection('pacientes')

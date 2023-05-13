@@ -5,11 +5,9 @@ import 'package:get/get.dart';
 import 'package:app_agenda_consulta/features/service/service_app.dart';
 import 'package:intl/intl.dart';
 
-enum Status { initial, loading, suceful, error }
-
-class RegisterConsultationController extends GetxController {
+class ScheduleConsultationController extends GetxController {
   ServiceApp serviceApp;
-  RegisterConsultationController({
+  ScheduleConsultationController({
     required this.serviceApp,
   });
 
@@ -29,7 +27,9 @@ class RegisterConsultationController extends GetxController {
 
   RxBool status = false.obs;
 
-  List<PatientModel> listPatient = [];
+  List<PatientModel> patients = [];
+
+  final keyForm = GlobalKey<FormState>();
 
   void clearFields() {
     nameEC.clear();
@@ -38,14 +38,14 @@ class RegisterConsultationController extends GetxController {
     idEC.clear();
   }
 
-  Future<void> register() async {
+  Future<void> scheduleConsult() async {
     PatientModel patient = PatientModel();
     patient.name = nameEC.text;
     patient.doctor = doctorEC.text;
     patient.id = idEC.text;
     patient.date = dateEC.text;
     try {
-      await serviceApp.register(patient);
+      await serviceApp.scheduleConsult(patient);
       clearFields();
       status.value = false;
 
@@ -95,7 +95,7 @@ class RegisterConsultationController extends GetxController {
     }
   }
 
-  void getPatientId() {
+  void getPatientId() async {
     try {
       idEC.text = serviceApp.getPatientId();
     } on GenericServiceError {

@@ -3,7 +3,7 @@ import 'package:app_agenda_consulta/features/repository/repository.dart';
 import 'package:app_agenda_consulta/features/service/service_app.dart';
 import 'package:get/get.dart';
 
-import '../features/home/controller/home_controller.dart';
+import '../../features/home/controller/home_controller.dart';
 
 class InitialBinding extends Bindings {
   @override

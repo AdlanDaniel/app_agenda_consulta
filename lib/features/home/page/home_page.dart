@@ -1,9 +1,9 @@
 import 'package:app_agenda_consulta/core/ui/design/color.dart';
 import 'package:app_agenda_consulta/core/ui/design/size.dart';
-import 'package:app_agenda_consulta/core/ui/resorces/messages.dart';
+import 'package:app_agenda_consulta/core/ui/resources/messages.dart';
 import 'package:app_agenda_consulta/core/ui/widgets/custom_text_form_field.dart';
 import 'package:app_agenda_consulta/features/home/controller/home_controller.dart';
-import 'package:app_agenda_consulta/routes/routes.dart';
+import 'package:app_agenda_consulta/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
           actions: [
             IconButton(
                 onPressed: () {
-                  Get.toNamed(Routes.registerConsultationPage)
+                  Get.toNamed(AppRoutes.registerConsultationPage)
                       ?.then((value) => controller.dayNow());
                 },
                 icon: const Icon(
@@ -60,26 +60,26 @@ class _HomePageState extends State<HomePage> {
                 flex: 16,
                 child: ReorderableListView.builder(
                     shrinkWrap: true,
-                    itemCount: controller.listPatient.length,
+                    itemCount: controller.patients.length,
                     onReorder: ((oldIndex, newIndex) {
                       if (newIndex > oldIndex) newIndex--;
-                      final patient = controller.listPatient.removeAt(oldIndex);
-                      controller.listPatient.insert(newIndex, patient);
+                      final patient = controller.patients.removeAt(oldIndex);
+                      controller.patients.insert(newIndex, patient);
                     }),
                     itemBuilder: (context, index) {
-                      // final patientIndexGet =
-                      //     Rx<PatientModel>(controller.listPatient[index]);
+                      final patient = controller.patients[index];
 
-                      final patientIndex = controller.listPatient[index];
                       return Column(
-                        key: ValueKey(patientIndex.name),
+                        key: Key(patient.id),
                         children: [
                           Card(
                             child: Dismissible(
+                              key: Key(patient.id),
                               direction: DismissDirection.endToStart,
                               onDismissed: (direction) {
                                 if (direction == DismissDirection.endToStart) {
-                                  controller.deleteConsult(patientIndex.id);
+                                  controller.removePatient(index);
+                                  controller.deleteConsult(patient.id);
                                 }
                               },
                               background: Container(
@@ -91,25 +91,23 @@ class _HomePageState extends State<HomePage> {
                                           color: CustomColors.white)
                                     ],
                                   )),
-                              key: Key(patientIndex.name),
                               child: Obx(
                                 () => ListTile(
                                   contentPadding: const EdgeInsets.only(
                                       top: CustomSize.sizeS,
                                       bottom: CustomSize.sizeXS),
                                   trailing: Checkbox(
-                                      value: patientIndex.finalized,
+                                      value: patient.finalized,
                                       onChanged: (value) async {
                                         setState(() {
-                                          patientIndex.finalized = value;
+                                          patient.finalized = value;
                                         });
 
-                                        await controller.updateFinalized(
-                                            patientIndex.id,
-                                            patientIndex.finalized);
+                                        await controller.changeStatusConsult(
+                                            patient.id, patient.finalized);
                                       }),
                                   leading: IconButton(
-                                    icon: patientIndex.present
+                                    icon: patient.present
                                         ? const Icon(Icons.person,
                                             size: CustomSize.sizeXXXXL,
                                             color: CustomColors.greenMedium)
@@ -118,18 +116,16 @@ class _HomePageState extends State<HomePage> {
                                             color: CustomColors.orangeMedium),
                                     onPressed: () async {
                                       setState(() {
-                                        patientIndex.present =
-                                            !patientIndex.present;
+                                        patient.present = !patient.present;
                                       });
-                                      await controller.updatePresent(
-                                          patientIndex.id,
-                                          patientIndex.present);
+                                      await controller.changeStatusPatient(
+                                          patient.id, patient.present);
                                     },
                                   ),
                                   title: Row(
                                     children: [
                                       Text(
-                                        patientIndex.name!,
+                                        patient.name!,
                                         style: const TextStyle(
                                             fontSize: CustomSize.sizeXL,
                                             fontWeight: FontWeight.w500),
@@ -142,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       const SizedBox(height: CustomSize.sizeS),
                                       Text(
-                                        'Dr(a) ${controller.listPatient[index].doctor}',
+                                        'Dr(a) ${controller.patients[index].doctor}',
                                         style: const TextStyle(
                                             fontSize: CustomSize.sizeL,
                                             fontWeight: FontWeight.w400),
